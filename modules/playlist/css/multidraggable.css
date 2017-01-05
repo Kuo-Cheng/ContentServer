@@ -1,0 +1,378 @@
+.table-fixed thead {
+  width: 97%;
+}
+.table-fixed tbody {
+  height: 230px;
+  overflow-y: auto;
+  width: 100%;
+}
+.table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+  display: block;
+}
+.table-fixed tbody td, .table-fixed thead > tr> th {
+  float: left;
+  border-bottom-width: 0;
+}
+
+.lockHeadTb {
+    border-collapse: collapse;
+    width: 100%;
+    /* overflow-x: scroll; */
+	/* overflow-x: hidden;  */
+    /*display: block; */
+}
+.lockHeadTb thead {
+    background-color: #EFEFEF;
+}
+
+.lockHeadTb thead {
+   /* display: block; */
+}
+
+
+.lockHeadTb tbody {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    /* display: block; */
+    height: 140px;
+}
+
+.lockHeadTb tr {
+    height: 25px;
+}
+.lockHeadTb td,.lockHeadTb th {
+    /* min-width: 100px; */
+    border: dashed 1px lightblue;
+}
+
+/*
+section {
+  position: relative;
+  border: 1px solid #000;
+  padding-top: 37px;
+  background: lightgrey;
+}
+section.positioned {
+  position: absolute;
+  top:100px;
+  left:100px;
+  width:800px;
+  box-shadow: 0 0 15px #333;
+}
+.container {
+  overflow-y: auto;
+  height: 200px;
+}
+table {
+  border-spacing: 0;
+  width:100%;
+}
+td + td {
+  border-left:1px solid #eee;
+}
+td, th {
+  border-bottom:1px solid #eee;
+  background: #ddd;
+  color: #000;
+  padding: 10px 25px;
+}
+th {
+  height: 0;
+  line-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  color: transparent;
+  border: none;
+  white-space: nowrap;
+}
+th div{
+  position: absolute;
+  background: transparent;
+  color: #fff;
+  padding: 9px 25px;
+  top: 0;
+  margin-left: -25px;
+  line-height: normal;
+  border-left: 1px solid #800;
+}
+th:first-child div{
+  border: none;
+}
+*/
+
+.sessionCls{
+    position: relative;
+    border: 1px solid #000;
+    /* padding-top: 50px; */
+    background:#500;
+}
+
+.sessionCls.positioned {
+  position: absolute;
+  top:0px;
+  left:100px;
+  width:100%;
+  box-shadow: 0 0 15px #333;
+}
+
+.scrollContainerTbCls{
+    background: linear-gradient(#D4D0C8, #000000);
+    
+}
+
+table.mediaTableBody {
+    display: table;   
+	/*height:99%;*/
+}
+
+#scrollTb {
+    /* height: 200px; 
+    overflow-y: auto;
+    overflow-y: hidden;*/ 
+    border-spacing: 0;
+    width:100%;
+    border: 1px solid grey;
+    /*background: rgba(200,200,200,0.9);
+    background: linear-gradient(#D4D0C8, #FFFFFF);*/
+}
+
+/** Control the distance of tbody to top. */
+/*
+#scrollTb tbody:before {
+  content: '';
+  display: block;
+  height: 25px;
+}
+*/
+
+
+/** DIV inside the TH */
+.sortThDivCls{
+    position: absolute;
+    /* background: transparent; */
+    color: black;
+    
+    
+    /*
+    border-bottom:1px solid #bbb;
+	border-left:1px solid #bbb;
+    width:100%; 
+    border: 1px solid grey;
+    background: rgba(255,255,255,0.9);
+    
+    padding: 0px;
+    margin: : 0px;
+    */
+}
+
+table.mediaTableBody thead, table.mediaTableBody tbody {
+	float: left;
+	width:100%;
+}
+
+table.mediaTableBody tbody {
+	/* overflow: auto; */
+}
+
+table.mediaTableBody tr {
+	display: table;
+	text-align: left;
+	width:100%;
+}
+
+
+
+.center{
+	text-align:left;
+}
+
+.scrollTb th{
+   /*background-image:url('../img/th.png'); */
+   /* height:30px; */
+   /* background-repeat:no-repeat; color:white; */
+   color:black;
+   /* text-shadow: #012b4d 1px 1px 1px; */
+   text-align: center;   
+   border-bottom:1px solid #bbb;
+}
+
+.scrollTb td{
+	text-indent:5px;
+	color:#444;
+	border-bottom:1px solid #bbb;
+	border-left:1px solid #bbb;
+}
+
+/*
+td.disabled, th.disabled{
+    width:100px;
+    text-align: center;
+    min-width:100px;
+}
+*/
+
+.scrollTb td.left{
+	border-left:1px solid #2e638e;
+}
+
+.scrollTb td.right{
+	border-right:1px solid #2e638e;
+}
+
+.scrollTb td.bottom{
+	border-bottom:1px solid #2e638e;
+}
+
+.grip{
+	width:20px;
+	height:15px;
+	margin-top:-3px;
+	/*background-image:url('../img/grip.png'); */
+	margin-left:-5px;
+	position:relative;
+	z-index:88;
+	cursor:e-resize;
+}
+
+.grip:hover{
+	background-position-x:-20px;
+}
+.JCLRLastGrip .grip{
+    background-position-y:-18px;
+    left:-2px;
+}
+
+.dragging .grip{
+	background-position-x:-40px;
+}
+
+.sampleText{
+	position:relative;
+	width:100%;
+}
+
+.dotted{
+	/*background-image:url('../img/dotted.png');*/
+	/* background-repeat:repeat-y; */
+}
+
+.resizeTableTdText{
+	display : block;
+	overflow : hidden;
+	text-overflow : ellipsis;
+	white-space : nowrap;
+}
+
+.mediaTableHeader{
+    border: 1px solid grey;
+    background: rgba(255,255,255,0.9);
+    background: linear-gradient(#FFFFFF, #D4D0C8);
+    padding: 0px;
+    margin: : 0px;
+}
+
+/** Media list table header check box area. */
+.mediaTableHeaderChk{
+    border-right: 1px solid grey;
+    border-right-style: ridge;
+    /*padding: 1px;
+    margin: 1px; */
+    text-overflow: ellipsis;
+    white-space:nowrap;
+    position: absolute;
+    background: transparent;
+}
+
+.mediaTableHeaderChkDiv{
+    position: absolute;
+    margin-left: 8px;
+    margin-top: 6px;
+    top: 0;
+    line-height: normal;
+}
+
+
+
+.mediaTableHeaderTh{
+    border-right: 1px solid grey;
+    border-right-style: ridge;
+}
+
+/* Media list table highlight state. */
+.mlt-state-highlight {
+	background-color: #c5f0f6 !important;
+}
+
+/* Media list table highlight state. */
+.mlt-media-name-field {
+	text-align: left;
+	cursor: hand;
+}
+
+/* Media list table transition combo. */
+.mlt-media-transition-combo {
+	
+}
+
+/* Media list table transition second combo. */
+.mlt-media-transition-combo-second {
+	
+}
+
+
+.listTbContainer{
+	/*border-width: 2;
+	border-color:blue;
+	border-style:outset;
+	overflow-y:scroll;*/
+}
+
+/* test scroll */
+
+
+
+
+
+
+
+/*
+td + td {
+  border-left:1px solid #eee;
+}
+*/
+/*
+td, th {
+  border-bottom:1px solid #eee;
+  background: #ddd;
+  color: #000;
+  padding: 10px 25px;
+}
+*/
+/*
+th {
+  height: 0;
+  line-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  color: transparent;
+  border: none;
+  white-space: nowrap;
+}*/
+
+/*
+th div{
+  position: absolute;
+  background: transparent;
+  color: #fff;
+  padding: 9px 25px;
+  top: 0;
+  margin-left: -25px;
+  line-height: normal;
+  border-left: 1px solid #800;
+}*/
+
+/*
+th:first-child div{
+  border: none;
+}
+*/
