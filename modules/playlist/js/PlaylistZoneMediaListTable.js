@@ -70,13 +70,10 @@ function MediaListTable(attrsObj) {
     
     var transitionComboData = attrsObj.transitionComboData;
     
-    //var lateRefreshOpen = false;
-    //The media list table column default width
-    //var _listTableColWidthArr = ["20", "380","280" ,"10%","10%","26%"];
     var _listTableColWidthArr = ["24", "300","300" ,"145","145","315"];
     
     /** The media list table min width. */
-    var listTableMinColWidth = ["24", "300","300" ,"145","145","320"];
+    var _listTableMinColWidth = ["24", "200","150" ,"100","145","320"];
     
     /** The media list table default width */
     var _listTableWidth = "1800px";
@@ -478,7 +475,9 @@ function MediaListTable(attrsObj) {
                 
         //How much .bodyDivCls add, the head & body add the same.
         if(this.actionStatus === this.actionStatusResizeSouth){
-            self.resizeCol();
+			self.countWidthByZoneList();
+            //self.resizeCol();
+			self.nonResizeCol(viewWidth);
         }else if(this.actionStatus === this.actionStatusResizeWest){
             var westDiff = 0;            
             //narrow the list view
@@ -491,18 +490,22 @@ function MediaListTable(attrsObj) {
                 bodyDiv.css("width",viewWidth-westDiff);
                 jQuery(bodyTbl).css("width",viewWidth-westDiff);
                 
+				console.log("Before countWidthByZoneList!");
                 self.countWidthByZoneList();
 
+				console.log("Before resizeWestNarrow!");
                 //Resize columns before initialize the event
                 self.resizeWestNarrow();
-                
+				
+                // Remove the resize function by Alex 2017-01-05
                 //Refresh the hidden control for the resize
-                if(isChrome){
-                    self.initResizeEvent();
-                }else{
-                    
-                    self.resizeColNonChrome(viewWidth);
-                }                                
+                //if(isChrome){
+                //    self.initResizeEvent();
+                //}else{
+                
+				console.log("Before nonResizeCol!");
+                self.nonResizeCol(viewWidth);
+                //}                                
             }else{                               
                 headerDiv.css("width",viewWidth);
                 headerTable.css("width",viewWidth);
@@ -511,18 +514,21 @@ function MediaListTable(attrsObj) {
                 jQuery(bodyDiv).css("width",viewWidth);
                 jQuery(bodyTbl).css("width",viewWidth);
 
+				console.log("Before countWidthByZoneList!");
                 self.countWidthByZoneList();
                                 
+				// Remove the resize function by Alex 2017-01-05
                 //Refresh the hidden control for the resize
-                if(isChrome){
+                //if(isChrome){
                     //Resize columns before initialize the event
-                    self.resizeCol();
-                    self.initResizeEvent();
-                    self.resizeCol();
-                }else{
-                    
-                    self.resizeColNonChrome(viewWidth);
-                }                                
+                //    self.resizeCol();
+                //    self.initResizeEvent();
+                //    self.resizeCol();
+                //}else{
+                
+				console.log("Before nonResizeCol!");
+                self.nonResizeCol(viewWidth);
+                //}                                
                 
             }
         }else{            
@@ -584,8 +590,9 @@ function MediaListTable(attrsObj) {
     /**
     * Performance tuning function
     * To handle the west resize then switch tab.
-    * 24px, 25% , 25%, min, min ,25%
+    * 24px, 23% , 23%, min, min ,29%
     */
+	/**
     this.reWidth = function(){
         var zoneList = self.getZoneList();
         var zoneContentList = self.getZoneContentListView();
@@ -601,17 +608,43 @@ function MediaListTable(attrsObj) {
         listViewWidth = listViewWidth-1.5;
         
         if(listViewWidth>0){
-            _listTableColWidthArr[0] = 24;
+			//The check box width, it's fixed.
+            _listTableColWidthArr[0] = _listTableMinColWidth[0];
             
-            _listTableColWidthArr[1] = Math.ceil(listViewWidth*0.25);
-            _listTableColWidthArr[2] = _listTableColWidthArr[1];
-        
-            var three= Math.ceil((listViewWidth-(_listTableColWidthArr[1]*3))/2 );
-            
-            _listTableColWidthArr[3] = three;
-            _listTableColWidthArr[4] = three; 
-            
-            _listTableColWidthArr[5] = listViewWidth -(_listTableColWidthArr[0]+_listTableColWidthArr[1]+_listTableColWidthArr[2]+_listTableColWidthArr[3]+_listTableColWidthArr[4]);
+			var sumFront5 = parseInt(_listTableMinColWidth[0]) + parseInt(_listTableMinColWidth[1]) + parseInt(_listTableMinColWidth[2]) + 
+							parseInt(_listTableMinColWidth[3]) + parseInt(_listTableMinColWidth[4]);
+			
+			var tmpLastWidth = ( listViewWidth - sumFront5 );
+			//The 1st priority - keep the last 'Transition Effect/Duration' more than _listTableMinColWidth[5]
+			if( tmpLastWidth > parseInt(_listTableMinColWidth[5]) ){
+				//Duration
+				_listTableColWidthArr[3] = _listTableMinColWidth[3];
+				//Total Elapsed Time
+				_listTableColWidthArr[4] = _listTableMinColWidth[4];
+				
+				//Name
+				_listTableColWidthArr[1] = _listTableMinColWidth[1];
+				//Description
+				_listTableColWidthArr[2] = _listTableMinColWidth[2];
+				
+				//Transition Effect/Duration
+				_listTableColWidthArr[5] = listViewWidth -( parseInt(_listTableColWidthArr[0]) + parseInt(_listTableColWidthArr[1]) +
+															parseInt(_listTableColWidthArr[2]) + parseInt(_listTableColWidthArr[3]) +
+															parseInt(_listTableColWidthArr[4]) );
+			}else{
+				_listTableColWidthArr[5] = _listTableMinColWidth[5];
+				//2nd priority - 'Media name'
+				_listTableColWidthArr[3] = _listTableMinColWidth[3];
+				_listTableColWidthArr[4] = _listTableMinColWidth[4];
+				_listTableColWidthArr[2] = _listTableMinColWidth[2];
+				
+				var otherWidth = parseInt(_listTableColWidthArr[0]) + parseInt(_listTableColWidthArr[2]) + parseInt(_listTableColWidthArr[3]) +
+								parseInt(_listTableColWidthArr[4]) + parseInt(_listTableColWidthArr[5])
+				_listTableColWidthArr[1] = listViewWidth - otherWidth ;
+				
+			}
+			console.log('sumFront5='+sumFront5);
+            console.log(_listTableColWidthArr);
             
             jQuery(headerDiv).css("width",listViewWidth);
             jQuery(headerTbl).css("width",listViewWidth);
@@ -628,17 +661,20 @@ function MediaListTable(attrsObj) {
                 jQuery(headThArr[3]).css("width",_listTableColWidthArr[3]);
                 jQuery(headThArr[4]).css("width",_listTableColWidthArr[4]);
                 jQuery(headThArr[5]).css("width",_listTableColWidthArr[5]);
+				
             }                        
         }
         
         self.resizeCol();
         //Just chrome run the resize event
-        if(isChrome){
+        //if(isChrome){
             
-            self.initResizeEvent();
-        }        
+        //    self.initResizeEvent();
+        //}        
     };
-    
+    */
+	
+	
     /**
     * Set the display area height.
     * @param viewHeight 
@@ -938,7 +974,7 @@ function MediaListTable(attrsObj) {
                             var chkObj = tdObj.children;
                             if(chkObj && chkObj[0]){
                                 for(var idx=0;idx<idxArr.length;idx++){
-                                    if( (trIdx+1) === idxArr[idx] ){
+                                    if( (trIdx+1) === parseInt(idxArr[idx]) ){
                                         chkObj[0].checked = true;
                                         break; //got it, doesn't check another. 
                                     }
@@ -1172,6 +1208,7 @@ function MediaListTable(attrsObj) {
                         
                         self.checkAllMedia(false);
                         self.unclassAllMedia();
+						self.unSelectAllThumbMedia();
 
                         if(jQuery(this)[0] && jQuery(this)[0].firstElementChild ){
                             var allTd = jQuery(this)[0].children;
@@ -1264,7 +1301,9 @@ function MediaListTable(attrsObj) {
                 //self.refreshThumbnailData();
                 self.dropRefreshThumbnailData();
                 //self.updateThumbnailSelectedIndex();
-                self.reWidth();
+                //Alex test the new re-width function
+				//self.reWidth();
+				self.nonResizeCol();
                 
                 self.lockComboxNone();
                 
@@ -1421,7 +1460,8 @@ function MediaListTable(attrsObj) {
             
             self.attachTotalElapsedtimeEvent();            
             
-            self.reWidth();                                  
+            //self.reWidth();   
+			self.nonResizeCol();
             
             //Refresh the style
             self.reStyleTr();           
@@ -1493,7 +1533,8 @@ function MediaListTable(attrsObj) {
                 //self.refreshThumbnailData();
                 self.dropRefreshThumbnailData();
                 //self.updateThumbnailSelectedIndex();
-                self.reWidth();
+                //self.reWidth();
+				self.nonResizeCol();
                 
                 self.lockComboxNone();
                 
@@ -1548,7 +1589,8 @@ function MediaListTable(attrsObj) {
                 //self.refreshThumbnailData();
                 self.dropRefreshThumbnailData();
                 //self.updateThumbnailSelectedIndex();
-                self.reWidth();
+                //self.reWidth();
+				self.nonResizeCol();
                 
                 self.lockComboxNone();
                 
@@ -1628,8 +1670,8 @@ function MediaListTable(attrsObj) {
                 _listTableColWidthArr[5] = layoutEditWidth -(_listTableColWidthArr[0]+_listTableColWidthArr[1]+_listTableColWidthArr[2]+_listTableColWidthArr[3]+_listTableColWidthArr[4]);
             }else{
                 
-                _listTableColWidthArr[5] = listTableMinColWidth[5];
-                var tmpAvg = (listViewWidth - (parseInt(listTableMinColWidth[5]) +parseInt(listTableMinColWidth[0])) )/4;
+                _listTableColWidthArr[5] = _listTableMinColWidth[5];
+                var tmpAvg = (listViewWidth - (parseInt(_listTableMinColWidth[5]) +parseInt(_listTableMinColWidth[0])) )/4;
                 _listTableColWidthArr[1] = tmpAvg;
                 _listTableColWidthArr[2] = tmpAvg;
                 _listTableColWidthArr[3] = tmpAvg;
@@ -1910,8 +1952,8 @@ function MediaListTable(attrsObj) {
                 for (var thIdx = 0; thIdx < headThArr.length; thIdx++) {
                     //Check and resize the 1st column
                     if(thIdx===0){                                    
-                        jQuery(headThArr[thIdx]).css("width","24");
-                        jQuery(headThArr[thIdx]).width("24");                        
+                        jQuery(headThArr[thIdx]).css("width",_listTableColWidthArr[0]);
+                        jQuery(headThArr[thIdx]).width(_listTableColWidthArr[0]);                        
                         thWidthArr.push(24);                       
                     }else{                        
                         thWidthArr.push(jQuery(headThArr[thIdx]).width());
@@ -1928,7 +1970,7 @@ function MediaListTable(attrsObj) {
                     //Set body td width
                     for (var tdIdx = 0; tdIdx < bodyTdArr.length; tdIdx++) {
                         if(tdIdx===0){
-                            jQuery(bodyTdArr[tdIdx]).width(24);        
+                            jQuery(bodyTdArr[tdIdx]).width(_listTableColWidthArr[0]);        
                         }else{      
                             if(isChrome){
                                 jQuery(bodyTdArr[tdIdx]).width(thWidthArr[tdIdx]);
@@ -1945,7 +1987,7 @@ function MediaListTable(attrsObj) {
                     var tdWidthArr = [];
                     for (var tdIdx = 0; tdIdx < bodyTdArr.length; tdIdx++) {
                         if(tdIdx===0){
-                            tdWidthArr.push(24);
+                            tdWidthArr.push(_listTableColWidthArr[0]);
                         }else{
                             if(isChrome){
                                 tdWidthArr.push(jQuery(bodyTdArr[tdIdx]).width());
@@ -1975,17 +2017,32 @@ function MediaListTable(attrsObj) {
      * @param {type} newViewWidth description
      * @returns 
      */
-    this.resizeColNonChrome = function(newViewWidth){
+    this.nonResizeCol = function(newViewWidth){
         
-        var leftViewWidth = newViewWidth - (24+145*2);
+		if(newViewWidth>0){
+			console.log("newViewWidth>0");
+		}else{
+			var zoneList = self.getZoneList();
+			var zoneContentList = self.getZoneContentListView();               
+			newViewWidth = jQuery(zoneList).width();
+		}
+		
+        
+		var leftViewWidth = newViewWidth - (parseInt(_listTableColWidthArr[0])+parseInt(_listTableColWidthArr[3])+parseInt(_listTableColWidthArr[4]));
+		
         var twoWidth = 0;
         var threeWidth = 0;
         var sixWidth = 0;
-        
-        twoWidth = (leftViewWidth-320)/2;
-        threeWidth = (leftViewWidth-320)/2;
-        
-        sixWidth = newViewWidth - (twoWidth+threeWidth+ 24 + 145*2);
+                
+		twoWidth = parseInt(_listTableColWidthArr[1]) ;
+		console.log("twoWidth="+twoWidth);
+		
+        //threeWidth = (leftViewWidth-320)/2;
+		//threeWidth = (leftViewWidth - parseInt(_listTableColWidthArr[5]))/2;
+		threeWidth = parseInt(_listTableColWidthArr[2]) ;
+        console.log("threeWidth="+threeWidth);
+		
+        sixWidth = newViewWidth - (twoWidth+threeWidth+ parseInt(_listTableColWidthArr[0]) + parseInt(_listTableColWidthArr[3])+parseInt(_listTableColWidthArr[4]));
         
         var mainTblDivObj = self.getZoneContentListView();
         var headerDiv = self.getTheadDiv();
@@ -2011,19 +2068,26 @@ function MediaListTable(attrsObj) {
             jqTrObj = jQuery(tbodyObj);
             
             if(jqTrObj && jqTrObj[0] && jqTrObj[0].children){                
+                                                                  
+                jQuery(headThArr[0]).css("width",_listTableColWidthArr[0]);
+                jQuery(headThArr[0]).width(_listTableColWidthArr[0]);
+                jQuery(headThArr[3]).css("width",_listTableColWidthArr[3]);
+                jQuery(headThArr[3]).width(_listTableColWidthArr[3]);
+                jQuery(headThArr[4]).css("width",_listTableColWidthArr[4]);
+                jQuery(headThArr[4]).width(_listTableColWidthArr[4]);
                 
-                                                  
-                jQuery(headThArr[0]).css("width","24");
-                jQuery(headThArr[0]).width("24");
-                jQuery(headThArr[3]).css("width","145");
-                jQuery(headThArr[3]).width("145");
-                jQuery(headThArr[4]).css("width","145");
-                jQuery(headThArr[4]).width("145");
-                
-                jQuery(headThArr[1]).css("width",twoWidth);
-                jQuery(headThArr[1]).width(twoWidth);
-                jQuery(headThArr[2]).css("width",threeWidth);
-                jQuery(headThArr[2]).width(threeWidth);
+				_listTableColWidthArr[1] = twoWidth;
+                jQuery(headThArr[1]).css("width",_listTableColWidthArr[1]);
+                jQuery(headThArr[1]).width(_listTableColWidthArr[1]);
+				
+				_listTableColWidthArr[2] = threeWidth;
+                jQuery(headThArr[2]).css("width",_listTableColWidthArr[2]);
+                jQuery(headThArr[2]).width(_listTableColWidthArr[2]);
+				
+				sixWidth = headerWidth - ( parseInt(_listTableColWidthArr[0]) + parseInt(_listTableColWidthArr[1]) + parseInt(_listTableColWidthArr[2]) +
+											parseInt(_listTableColWidthArr[3])+ parseInt(_listTableColWidthArr[4]) );
+				_listTableColWidthArr[5] = sixWidth;
+				
                 jQuery(headThArr[5]).css("width",sixWidth);
                 jQuery(headThArr[5]).width(sixWidth);
                                 
@@ -2033,17 +2097,22 @@ function MediaListTable(attrsObj) {
                 if(trArrObj && trArrObj[0] && trArrObj[0].children){
                     bodyTdArr = trArrObj[0].children;
                     
-                    jQuery(bodyTdArr[0]).css("width","24");
-                    jQuery(bodyTdArr[0]).width("24");
-                    jQuery(bodyTdArr[3]).css("width","145");
-                    jQuery(bodyTdArr[3]).width("145");
-                    jQuery(bodyTdArr[4]).css("width","145");
-                    jQuery(bodyTdArr[4]).width("145");
+                    jQuery(bodyTdArr[0]).css("width",_listTableColWidthArr[0]);
+                    jQuery(bodyTdArr[0]).width(_listTableColWidthArr[0]);
+                    jQuery(bodyTdArr[3]).css("width",_listTableColWidthArr[3]);
+                    jQuery(bodyTdArr[3]).width(_listTableColWidthArr[3]);
+                    jQuery(bodyTdArr[4]).css("width",_listTableColWidthArr[4]);
+                    jQuery(bodyTdArr[4]).width(_listTableColWidthArr[4]);
 
-                    jQuery(bodyTdArr[1]).css("width",twoWidth);
-                    jQuery(bodyTdArr[1]).width(twoWidth);
-                    jQuery(bodyTdArr[2]).css("width",threeWidth);
-                    jQuery(bodyTdArr[2]).width(threeWidth);
+                    jQuery(bodyTdArr[1]).css("width",_listTableColWidthArr[1]);
+                    jQuery(bodyTdArr[1]).width(_listTableColWidthArr[1]);
+                    jQuery(bodyTdArr[2]).css("width",_listTableColWidthArr[2]);
+                    jQuery(bodyTdArr[2]).width(_listTableColWidthArr[2]);
+					
+					sixWidth = bodyWidth - ( parseInt(_listTableColWidthArr[0]) + parseInt(_listTableColWidthArr[1]) + parseInt(_listTableColWidthArr[2]) +
+											parseInt(_listTableColWidthArr[3])+ parseInt(_listTableColWidthArr[4]) );
+					_listTableColWidthArr[5] = sixWidth;
+					
                     jQuery(bodyTdArr[5]).css("width",sixWidth);
                     jQuery(bodyTdArr[5]).width(sixWidth);                                                                   
                 }
@@ -2052,8 +2121,7 @@ function MediaListTable(attrsObj) {
     };
     
     this.sumFiveWidth = function (thWidthArr){
-        
-        
+                
         var tmpFive = 0;
         if(thWidthArr && thWidthArr.length>0){
             for(var idx=0; idx<thWidthArr.length; idx++){
@@ -2752,7 +2820,7 @@ function MediaListTable(attrsObj) {
 //                   if(thSeq===2){//name
 ////                        
 ////                        //Set the min width rule by getting the max length of name fields.
-//                        if(nameFieldMaxWidth>0 && nameFieldMaxWidth>listTableMinColWidth[1]){
+//                        if(nameFieldMaxWidth>0 && nameFieldMaxWidth>_listTableMinColWidth[1]){
 //                            thObjWidth = nameFieldMaxWidth+3;
 //
 //                        }
@@ -2882,6 +2950,15 @@ function MediaListTable(attrsObj) {
         }                
     };
     
+	/**
+	* Unselect all media of the thumbnail view.
+	*/
+	this.unSelectAllThumbMedia = function(){
+		console.log("unSelectAllThumbMedia!");
+		if(_zoneMediaView){
+			_zoneMediaView.unselectAll();
+		}
+	}
     /**
     * Keep or remove the data by json array.
     * @param {type} jsonArr description
@@ -3741,6 +3818,7 @@ function MediaListTable(attrsObj) {
                         }else{
                             self.checkAllMedia(false);
                             self.unclassAllMedia();
+							self.unSelectAllThumbMedia();
                         }
                         self.reStyleTr();
 
@@ -4274,9 +4352,9 @@ function MediaListTable(attrsObj) {
                 
                 self.initMultipleDragAndDrop();                
             
-                if(isChrome){
-                	self.initResizeEvent();
-                }                                
+                //if(isChrome){
+                //	self.initResizeEvent();
+                //}                                
                 
                 self.adjustMainStyle();                
 
@@ -5388,9 +5466,9 @@ function MediaListTable(attrsObj) {
         self.initMultipleDragAndDrop();
         
         
-        if(isChrome){
-        	self.initResizeEvent();
-        }                
+        //if(isChrome){
+        //	self.initResizeEvent();
+        //}                
 
         self.adjustMainStyle();
         

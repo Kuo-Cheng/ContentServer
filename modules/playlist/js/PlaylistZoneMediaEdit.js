@@ -620,11 +620,11 @@ function PlaylistZoneMediaEdit(option) {
             }
             
             //Chrome, attach resize events.
-            if(mediaListTable.isBrowserChrome()){
+            //if(mediaListTable.isBrowserChrome()){
                 
                 
-            	mediaListTable.initResizeEvent();
-            }
+            //	mediaListTable.initResizeEvent();
+            //}
                         
             mediaListTable.resizeCol();            
         }else{//No the zone id area, append new.
@@ -651,7 +651,8 @@ function PlaylistZoneMediaEdit(option) {
             
             _mediaListTableMap[_curZoneId] = mediaListTable;                
             
-            mediaListTable.reWidth();
+            //mediaListTable.reWidth();
+			mediaListTable.nonResizeCol();
         }
         
         _curListTblZoneId = _curZoneId;
@@ -723,7 +724,10 @@ function PlaylistZoneMediaEdit(option) {
             
 		var mediaListTable = _mediaListTableMap[_curZoneId]; 
 		if(mediaListTable){
-			mediaListTable.reWidth();
+			
+			//mediaListTable.reWidth();
+			
+			mediaListTable.nonResizeCol();
 		}
 	};
 	
@@ -2611,16 +2615,23 @@ function PlaylistZoneMediaEdit(option) {
             if(_zoneContentViewParam===_listView){
                 
             
-                setTimeout(function() {        
+                setTimeout(function() {       
+					console.log("Before unselectAll!");
                     _zoneMediaView.unselectAll();
+					console.log("Before select!"+selectedMedirIdArr);
                     _zoneMediaView.select(selectedMedirIdArr, true, false);    
                     //Display the correct zone content
                     var mediaListTable = _mediaListTableMap[_curZoneId];
                     if(mediaListTable){
-                        if( _actionStatus === _self.actionStatusResizeSouth ||
-                            _actionStatus === _self.actionStatusResizeWest){
-                            ;
+						
+						console.log("_actionStatus="+_actionStatus);
+						console.log("_self.actionStatusResizeSouth="+_self.actionStatusResizeSouth);
+						console.log("_self.actionStatusResizeWest="+_self.actionStatusResizeWest);
+						
+                        if( _actionStatus === _self.actionStatusResizeSouth || _actionStatus === _self.actionStatusResizeWest){
+                            console.log("Do nothing!");
                         }else{
+							console.log(selectedMedirIdArr);
                             mediaListTable.selectMediaByArr(selectedMedirIdArr);     
                         }
                         
